@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.btn-title-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn {
+  display: block;
+  padding: 10px 20px;
+  background-color: #2a2d2e;
+  color: #e0e0e0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: #3a3d3e;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.product-container {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.product-container .product-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+
+.dashboard .lists-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  height: 100%;
+  padding-bottom: 20px;
+  align-items: flex-start;
+}
+
+.lists-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.lists-container::-webkit-scrollbar-thumb {
+  background: #6a6a6a;
+  border-radius: 4px;
+}
+
+.lists-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list {
+  background: #151719; /* Darker background for lists */
+  color: #e0e0e0;
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #24282d; /* Slightly lighter border for separation */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  height: fit-content;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #24282d;
+}
+
+.list-header span {
+  font-weight: 600;
+  color: #d0d0d0;
+}
+
+.list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.list-card {
+  background: #1f2226; /* Darker card background for better contrast */
+  color: #d0d0d0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #2a2e33;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.list-card:hover {
+  background: #292d32;
+}
+
+.add-card-btn {
+  background: transparent;
+  color: #4a90e2;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.add-card-btn:hover {
+  background: rgba(74, 144, 226, 0.1);
+}
+
+.list-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list-content::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 4px;
+}
+
+.list-content::-webkit-scrollbar-thumb:hover {
+  background: #6a6a6a;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
