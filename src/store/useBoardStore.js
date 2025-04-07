@@ -29,7 +29,6 @@ export const useBoardStore = create((set, get) => ({
     try {
       const response = await boardAPI.sharedWithYou({ UserMasterId: user?.id });
       set({ sharedWithYou: response.data });
-      console.log('shared with you response', response);
     } catch (error) {
       console.log('error', error);
     }
@@ -80,7 +79,6 @@ export const useBoardStore = create((set, get) => ({
     set({ loading: true });
     try {
       const response = await boardAPI.shareBoard(board);
-      console.log('share response', response);
       return response;
     } catch (error) {
       console.log('err', error);

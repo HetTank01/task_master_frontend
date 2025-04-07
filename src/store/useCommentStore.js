@@ -9,7 +9,6 @@ export const useCommentStore = create((set, get) => ({
   setEditingData: (editingData) => set({ editingData }),
 
   fetchComments: async (cardId) => {
-    console.log('cardid', cardId);
     try {
       const response = await commentAPI.getAll({ cardId });
       set({ comments: response.data });
@@ -30,6 +29,16 @@ export const useCommentStore = create((set, get) => ({
       }
     } catch (error) {
       console.log('Error', error);
+    }
+  },
+
+  deleteComment: async (commentId, params) => {
+    try {
+      const response = await commentAPI.delete(commentId, params);
+      return response;
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      throw error;
     }
   },
 

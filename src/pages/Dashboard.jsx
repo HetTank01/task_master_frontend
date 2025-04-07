@@ -25,6 +25,7 @@ import {
   sortableKeyboardCoordinates,
   arrayMove,
 } from '@dnd-kit/sortable';
+import socket from '../socket';
 
 const Dashboard = () => {
   const { selectedBoard, fetchBoardsSharedWithYou } = useBoardStore();
@@ -54,8 +55,20 @@ const Dashboard = () => {
   useEffect(() => {
     if (selectedBoard?.id) {
       fetchLists(selectedBoard.id);
+
+      const handleListAdded = (data) => {
+        if (data.BoardMasterId === selectedBoard.id) {
+          fetchLists(selectedBoard.id);
+        }
+      };
+
+      socket.on('list:added', handleListAdded);
+
+      return () => {
+        socket.off('list:added', handleListAdded);
+      };
     }
-  }, [selectedBoard]);
+  }, [selectedBoard?.id, fetchLists]);
 
   const handleSubmit = (values) => {
     if (!editingData) {
@@ -65,6 +78,8 @@ const Dashboard = () => {
       };
 
       createList(formattedData);
+
+      socket.emit('list:add', { BoardMasterId: selectedBoard.id });
     } else {
       console.log('update logic');
     }

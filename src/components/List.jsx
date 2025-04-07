@@ -10,6 +10,7 @@ import SortableCard from './SortableCard';
 import CardModal from './CardModal';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import socket from '../socket';
 
 const List = ({ list }) => {
   const [isBtnClicked, setIsBtnClicked] = useState(false);
@@ -38,7 +39,19 @@ const List = ({ list }) => {
   };
 
   useEffect(() => {
-    if (list?.id) fetchCards(list.id);
+    if (list?.id) {
+      fetchCards(list.id);
+
+      const handleCardAdded = (data) => {
+        if (data.ListMasterId === list.id) {
+          fetchCards(list.id);
+        }
+      };
+
+      socket.on('card:added', handleCardAdded);
+
+      return () => socket.off('card:added', handleCardAdded);
+    }
   }, [list?.id, fetchCards]);
 
   const listCards = (cards[list.id] || []).sort(
@@ -52,9 +65,18 @@ const List = ({ list }) => {
     setIsModalOpen(true);
   };
 
-  const onFinish = (values) => {
-    createCard({ title: values.title, ListMasterId: list.id });
-    setIsBtnClicked(false);
+  const onFinish = async (values) => {
+    try {
+      const cardData = { title: values.title, ListMasterId: list.id };
+      await createCard(cardData);
+      await fetchCards(list.id);
+
+      socket.emit('card:add', { ListMasterId: list.id });
+
+      setIsBtnClicked(false);
+    } catch (error) {
+      console.error('Error creating card:', error);
+    }
   };
 
   return (

@@ -29,8 +29,9 @@ export const useListStore = create((set, get) => ({
   createList: async (data) => {
     set({ loading: true });
     try {
-      await listAPI.create(data);
+      const response = await listAPI.create(data);
       await get().fetchLists(data.BoardMasterId);
+      return response.data;
     } catch (error) {
       console.log('error', error);
     } finally {

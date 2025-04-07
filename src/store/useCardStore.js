@@ -29,6 +29,8 @@ export const useCardStore = create((set, get) => ({
           [listId]: response.data.sort((a, b) => a.position - b.position),
         },
       }));
+
+      console.log('Fetched cards for', listId, response.data);
     } catch (error) {
       console.log('Error fetching cards:', error);
     }
@@ -37,8 +39,8 @@ export const useCardStore = create((set, get) => ({
   createCard: async (data) => {
     set({ loading: true });
     try {
-      await cardAPI.create(data);
-      get().fetchCards(data.ListMasterId);
+      const response = await cardAPI.create(data);
+      return response.data;
     } catch (error) {
       console.log('Error creating card:', error);
     } finally {

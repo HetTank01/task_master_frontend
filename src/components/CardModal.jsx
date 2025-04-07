@@ -8,9 +8,6 @@ import {
   Avatar,
   Space,
   Tooltip,
-  Dropdown,
-  Menu,
-  Mentions,
 } from 'antd';
 import {
   UserOutlined,
@@ -19,12 +16,13 @@ import {
   SaveOutlined,
   EditOutlined,
   CloseOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { useCardStore } from '../store/useCardStore';
 import { useCommentStore } from '../store/useCommentStore';
 import { cardAPI } from '../api/endpoints/card';
-import { userAPI } from '../api/endpoints/user';
+// import { userAPI } from '../api/endpoints/user';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -38,6 +36,7 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
     fetchComments,
     cancelEditing,
     addReply,
+    deleteComment,
   } = useCommentStore();
 
   const [title, setTitle] = useState(selectedCard?.title || '');
@@ -54,7 +53,7 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
 
   const [activeReplyId, setActiveReplyId] = useState(null);
 
-  const [taggedUsers, setTaggedUsers] = useState([]);
+  // const [taggedUsers, setTaggedUsers] = useState([]);
 
   const user = JSON.parse(localStorage.getItem('user-storage'))?.state?.user;
 
@@ -79,20 +78,18 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
     }
   }, [editingData]);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await userAPI.getAll();
-        setTaggedUsers(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUsers = async () => {
+  //     try {
+  //       const response = await userAPI.getAll();
+  //       setTaggedUsers(response.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    fetchUsers();
-  }, []);
-
-  console.log('users', taggedUsers);
+  //   fetchUsers();
+  // }, []);
 
   useEffect(() => {
     const updateCard = async () => {
@@ -130,6 +127,12 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
     updateCard();
   }, [isModalOpen]);
 
+  useEffect(() => {
+    if (isEditingDesc) {
+      setEditDescription(description);
+    }
+  }, [isEditingDesc, description]);
+
   const handleSaveDescription = async () => {
     try {
       if (!editDescription.trim()) {
@@ -146,6 +149,15 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
       fetchCards(selectedCard.ListMasterId);
     } catch (error) {
       console.log('Error', error);
+    }
+  };
+
+  const handleDeleteComment = async (comment) => {
+    try {
+      await deleteComment(comment.id, { CardMasterId: selectedCard.id });
+      await fetchComments(selectedCard.id);
+    } catch (error) {
+      console.error('Failed to delete comment:', error);
     }
   };
 
@@ -217,8 +229,6 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
       console.log('double @');
     }
   };
-
-  console.log('tagged', taggedUsers);
 
   return (
     <Modal
@@ -318,7 +328,7 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
             )}
           </Flex>
 
-          <Mentions
+          {/* <Mentions
             value={newComment}
             onChange={setNewComment}
             placeholder="Comment with @mentions"
@@ -328,7 +338,7 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
                 label: user.email,
               };
             })}
-          />
+          /> */}
 
           <div style={{ marginBottom: '1rem' }}>
             <Input.TextArea
@@ -416,6 +426,15 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
                         </Space>
                       </Flex>
                       <Flex gap={8}>
+                        {user.id === comment.UserMasterId && (
+                          <Button
+                            type="text"
+                            icon={<DeleteOutlined />}
+                            size="small"
+                            onClick={() => handleDeleteComment(comment)}
+                            disabled={editingData !== null}
+                          />
+                        )}
                         {user.id === comment.UserMasterId && (
                           <Button
                             type="text"
