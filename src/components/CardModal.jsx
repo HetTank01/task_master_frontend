@@ -22,6 +22,7 @@ import React, { useEffect, useState } from 'react';
 import { useCardStore } from '../store/useCardStore';
 import { useCommentStore } from '../store/useCommentStore';
 import { cardAPI } from '../api/endpoints/card';
+import socket from '../socket';
 // import { userAPI } from '../api/endpoints/user';
 
 const { Title, Text, Paragraph } = Typography;
@@ -67,6 +68,16 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
   useEffect(() => {
     if (selectedCard?.id) {
       fetchComments(selectedCard.id);
+
+      const handleCommentData = (data) => {
+        if (data.CardMasterId === selectedCard.id) {
+          console.log('Comment Added to card: ', data);
+          fetchComments(selectedCard.id);
+        }
+      };
+      socket.on('comment:added', handleCommentData);
+
+      return () => socket.on('comment:added', handleCommentData);
     }
   }, [selectedCard?.id]);
 
@@ -175,6 +186,8 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
     } else {
       await saveComment(null, data);
     }
+
+    socket.emit('comment:add', { CardMasterId: selectedCard.id });
     fetchComments(selectedCard.id);
     setNewComment('');
   };
@@ -200,6 +213,7 @@ const CardModal = ({ isModalOpen, setIsModalOpen }) => {
     };
 
     const response = await addReply(data);
+    socket.emit('comment:add', { CardMasterId: selectedCard.id });
 
     if (response.status === 'success') {
       setReply('');

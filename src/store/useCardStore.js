@@ -105,8 +105,6 @@ export const useCardStore = create((set, get) => ({
 
     try {
       if (sourceListIdStr === destListIdStr) {
-        console.log('error from if block');
-
         // Same list - just update positions
         await listAPI.updateCardPosition(sourceListIdStr, {
           cards: updatedDestCards.map(({ id, position }) => ({
