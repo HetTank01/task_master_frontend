@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Card, Typography, Flex, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom';
-import { authAPI } from '../api';
 import { useUserStore } from '../store/useUserStore';
 
 const { Title } = Typography;
@@ -11,37 +10,23 @@ const Login = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const { setUser, setToken, setIsAuthenticated } = useUserStore();
+  const { login } = useUserStore();
 
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const response = await authAPI.login(values);
+      const response = await login(values);
 
-      if (response.data) {
-        setUser(response.data);
-        setToken(response.data.token);
-        setIsAuthenticated(true);
-
+      if (response?.data) {
         message.success('Login successful!');
-
         window.location.href = '/';
+      } else {
+        message.error('Login failed. Please try again.');
       }
     } catch (error) {
-      console.log('errorrr', error);
-      if (error.response) {
-        message.error(
-          error.response.data?.message ||
-            error.response.data?.error ||
-            'Login failed. Please check your credentials.'
-        );
-      } else if (error.request) {
-        message.error(
-          'No response from server. Please check your network connection.'
-        );
-      } else {
-        message.error('An unexpected error occurred. Please try again.');
-      }
+      console.error('Login failed:', error);
+      message.error(error.response?.data?.message || 'Login failed');
+      setLoading(false);
     } finally {
       setLoading(false);
     }

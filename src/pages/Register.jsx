@@ -2,19 +2,23 @@ import React from 'react';
 import { Form, Input, Button, Card, Typography, message } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { NavLink } from 'react-router-dom';
-import { authAPI } from '../api';
+import { useUserStore } from '../store/useUserStore';
 
 const { Title } = Typography;
 
 const Register = () => {
+  const { register } = useUserStore();
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
     try {
-      const response = await authAPI.register(values);
-      console.log('respose', response);
-      if (response.data) {
-        window.location.href = '/login';
+      const response = await register(values);
+
+      if (response?.data) {
+        message.success('Registration successful!');
+        window.location.href = '/';
+      } else {
+        message.error('Registration failed. Please try again.');
       }
     } catch (error) {
       console.error('Registration failed:', error);

@@ -7,13 +7,16 @@ import Dashboard from '../pages/Dashboard';
 import PrivateRoutesGuard from './PrivateRoutesGuard';
 import NotFound from '../NotFound';
 import InviteHandler from '../pages/InviteHandler';
+import PublicRoutesGuard from './PublicRoutesGuard';
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
+        <Route element={<PublicRoutesGuard />}>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+        </Route>
 
         <Route path="/invite" element={<InviteHandler />} />
 

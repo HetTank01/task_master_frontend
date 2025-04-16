@@ -4,7 +4,6 @@ import { useBoardStore } from '../store/useBoardStore';
 
 const CreateBoardModal = ({ visible, onCreate, onCancel }) => {
   const [form] = Form.useForm();
-
   const { editingData } = useBoardStore();
 
   useEffect(() => {
@@ -15,27 +14,23 @@ const CreateBoardModal = ({ visible, onCreate, onCancel }) => {
     }
   }, [editingData, form]);
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        form.resetFields();
-        onCreate(values);
-      })
-      .catch((info) => {
-        console.log('Validate Failed:', info);
-      });
+  const onFinish = (values) => {
+    form.resetFields();
+    onCreate(values);
   };
 
   return (
     <Modal
       title="Create Board"
       open={visible}
-      onOk={handleOk}
-      onCancel={onCancel}
+      onOk={() => form.submit()}
+      onCancel={() => {
+        form.resetFields();
+        onCancel();
+      }}
       okText={editingData ? 'Update' : 'Create'}
     >
-      <Form form={form} layout="vertical">
+      <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
           name="title"
           label="Board Name"
@@ -43,7 +38,7 @@ const CreateBoardModal = ({ visible, onCreate, onCancel }) => {
             { required: true, message: 'Please input the name of the board!' },
           ]}
         >
-          <Input placeholder="e.g. Marketing Campaign" name="title" />
+          <Input placeholder="e.g. Marketing Campaign" />
         </Form.Item>
       </Form>
     </Modal>
